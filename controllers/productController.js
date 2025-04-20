@@ -51,3 +51,60 @@ export async function deleteProduct(req, res) {
     res.status(500).json({ message: "Error deleting product", error });
   }
 }
+
+export async function updateProduct(req, res) {
+  if (!isAdmin(req)) {
+    res
+      .status(403)
+      .json({ message: "You are not authorized to update a product" });
+    return;
+  }
+
+  // Extract the product ID from the request parameters
+  const productId = req.params.productId;
+
+  // Get the data to update from the request body
+  const updatingData = req.body;
+
+  try {
+    await Product.updateOne({ productId: productId }, updatingData);
+
+    res.json({ message: "Product updated successfully" });
+  } catch (err) {
+    res.status(500).json({
+      message: "Error updating product",
+      error: err,
+    });
+  }
+}
+
+export async function getProductById(req, res) {
+  const productId = req.params.productId;
+
+  try {
+    const product = await Product.findOne({ productId: productId });
+    // Check if the product exists
+    if (product == null) {
+      res.status(404).json({ message: "Product not found" });
+      return;
+    }
+    // Check if the product is available
+    if (product.isAvailable) {
+      res.json(product);
+    } else {
+      // if the product is not available
+      if (!isAdmin(req)) {
+        // if the user is not an admin
+        res
+          .status(403)
+          .json({ message: "You are not authorized to view this product" });
+        return;
+      } else {
+        // if the user is an admin
+        // return the product even if it is not available
+        res.json(product);
+        return;
+      }
+    }
+  } catch (error) {}
+}

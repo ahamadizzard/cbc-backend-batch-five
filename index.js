@@ -4,6 +4,7 @@ import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import productRouter from "./routes/productRouter.js"; // import productRouter
 import userRouter from "./routes/userRouter.js"; // import userRouter
+import orderRouter from "./routes/orderRouter.js"; // import orderRouter
 import jwt from "jsonwebtoken";
 
 dotenv.config(); // load environment variables from .env file
@@ -48,6 +49,7 @@ mongoose
 
 app.use("/products", productRouter); // use productRouter for all routes starting with /products
 app.use("/users", userRouter); // use userRouter for all routes starting with /users
+app.use("/orders", orderRouter); // use orderRouter for all routes starting with /orders
 
 // start server
 app.listen(PORT, () => {
