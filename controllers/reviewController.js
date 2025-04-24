@@ -1,4 +1,5 @@
 import Review from "../models/reviewModel.js";
+import { isAdmin } from "./userController.js";
 
 export async function createReview(req, res) {
   // get user information
@@ -49,13 +50,24 @@ export async function createReview(req, res) {
   }
 }
 
+//this code is for admin user to view all reviews
 export async function getReviews(req, res) {
-  const reviews = await Review.find();
-  res.json(reviews);
+  try {
+    if (isAdmin(req)) {
+      // If the user is an admin, return all reviews
+      const reviews = await Review.find();
+      res.json(reviews);
+      // return;
+    }
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    res.status(500).json({ message: "Internal server error" });
+    return;
+  }
 }
 
 // this code is to convert the date to local time
 // const localDate = new Date(review.reviewDate).toLocaleString('en-US', {
-//   timeZone: 'Asia/Kolkata', // Replace with your timezone, e.g., 'America/New_York'
+//   timeZone: 'Asia/Colombo', // Replace with your timezone, e.g., 'America/New_York'
 // });
 // console.log(localDate); // Shows time in your region.

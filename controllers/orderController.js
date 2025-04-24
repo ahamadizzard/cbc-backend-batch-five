@@ -128,3 +128,9 @@ export async function createOrder(req, res) {
   // create order object
   // check the stock availability of the products in the order
 }
+
+export async function getOrders(req, res) {
+  // get all orders from the database
+  const orders = await Order.find();
+  res.json(orders);
+}
