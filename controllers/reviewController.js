@@ -1,0 +1,61 @@
+import Review from "../models/reviewModel.js";
+
+export async function createReview(req, res) {
+  // get user information
+  if (req.user == null) {
+    //only logged-in users can create orders
+    res.status(403).json({
+      message: "Please login and try again",
+    });
+    return;
+  }
+  const reviewInfo = req.body;
+  //check for the name in the reviewInfo
+  if (reviewInfo.name == null) {
+    reviewInfo.name = req.user.firstName + " " + req.user.lastName;
+  }
+  //Generate reviewId
+  let reviewId = "0001";
+  //this will give  the last review in the database
+  const lastReview = await Review.find().sort({ _id: -1 }).limit(1);
+  if (lastReview.length > 0) {
+    const lastReviewId = lastReview[0].reviewId;
+    //get the last reviewId and increment it by 1
+    reviewId = lastReviewId + 1;
+  }
+  // Create a new review object
+  const review = new Review({
+    reviewId: reviewId,
+    productId: reviewInfo.productId,
+    name: reviewInfo.name,
+    userImage: reviewInfo.userImage,
+    rating: reviewInfo.rating,
+    reviewText: reviewInfo.reviewText,
+    reviewImages: reviewInfo.reviewImages,
+    reviewDate: reviewInfo.reviewDate,
+    isVisible: true,
+  });
+  try {
+    // Save the review to the database
+    await review.save();
+    res.status(201).json({
+      message: "Review created successfully",
+      reviewId: review.reviewId,
+    });
+  } catch (error) {
+    console.error("Error creating review:", error);
+    res.status(500).json({ message: "Internal server error" });
+    return;
+  }
+}
+
+export async function getReviews(req, res) {
+  const reviews = await Review.find();
+  res.json(reviews);
+}
+
+// this code is to convert the date to local time
+// const localDate = new Date(review.reviewDate).toLocaleString('en-US', {
+//   timeZone: 'Asia/Kolkata', // Replace with your timezone, e.g., 'America/New_York'
+// });
+// console.log(localDate); // Shows time in your region.
