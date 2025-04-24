@@ -1,11 +1,13 @@
 import Product from "../models/productModel.js";
 import { isAdmin } from "./userController.js";
+import Review from "../models/reviewModel.js";
 
 export async function getProduct(req, res) {
   try {
     if (isAdmin(req)) {
       // If the user is an admin, return all products
       const products = await Product.find();
+
       res.json(products);
     } else {
       // If the user is not an admin, return only the available products
@@ -83,6 +85,13 @@ export async function getProductById(req, res) {
 
   try {
     const product = await Product.findOne({ productId: productId });
+
+    // Get the reviews for the product
+
+    // if (review) {
+    //   res.json(review);
+    // }
+
     // Check if the product exists
     if (product == null) {
       res.status(404).json({ message: "Product not found" });
@@ -90,7 +99,17 @@ export async function getProductById(req, res) {
     }
     // Check if the product is available
     if (product.isAvailable) {
-      res.json(product);
+      const review = await Review.find({ productId: productId });
+
+      //this combines the product and review data into a single object
+      // and sends it as a response
+      res.json({
+        success: true,
+        product: {
+          ...product._doc, // Product details
+          reviews: review, // Attach reviews array
+        },
+      });
     } else {
       // if the product is not available
       if (!isAdmin(req)) {
