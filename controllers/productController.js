@@ -86,44 +86,41 @@ export async function getProductById(req, res) {
   try {
     const product = await Product.findOne({ productId: productId });
 
-    // Get the reviews for the product
-
-    // if (review) {
-    //   res.json(review);
-    // }
-
     // Check if the product exists
     if (product == null) {
-      res.status(404).json({ message: "Product not found" });
+      res.status(404).json({ success: false, message: "Product not found" });
       return;
     }
-    // Check if the product is available
-    if (product.isAvailable) {
-      const review = await Review.find({ productId: productId });
-
-      //this combines the product and review data into a single object
-      // and sends it as a response
-      res.json({
-        success: true,
-        product: {
-          ...product._doc, // Product details
-          reviews: review, // Attach reviews array
-        },
+    // Check if the product is available for sale
+    if (!product.isAvailable && !isAdmin(req)) {
+      // If the product is not available and the user is not an admin, return a 403 error
+      res.status(403).json({
+        success: false,
+        message: "You are not authorized to view this product",
       });
-    } else {
-      // if the product is not available
-      if (!isAdmin(req)) {
-        // if the user is not an admin
-        res
-          .status(403)
-          .json({ message: "You are not authorized to view this product" });
-        return;
-      } else {
-        // if the user is an admin
-        // return the product even if it is not available
-        res.json(product);
-        return;
-      }
+      return;
     }
-  } catch (error) {}
+    const reviewFilter = { productId: productId };
+    if (!isAdmin(req)) {
+      // If the user is an admin, return all reviews for the product
+      reviewFilter.isVisible = true; // Include only visible reviews
+    }
+    const reviews = await Review.find(reviewFilter);
+
+    //this combines the product and review data into a single object
+    // and sends it as a response
+    res.json({
+      success: true,
+      product: {
+        ...product._doc, // Product details
+        reviews: reviews, // Attach reviews array
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching product",
+      error: error.message,
+    });
+  }
 }

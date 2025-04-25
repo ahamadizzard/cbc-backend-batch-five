@@ -34,6 +34,8 @@ export async function createReview(req, res) {
     reviewText: reviewInfo.reviewText,
     reviewImages: reviewInfo.reviewImages,
     reviewDate: reviewInfo.reviewDate,
+    // when the review is created, we keep it is visible by default
+    // admin can change this visibility
     isVisible: true,
   });
   try {
