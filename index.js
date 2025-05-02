@@ -49,10 +49,10 @@ mongoose
     console.log("Database Connection Error: ", error);
   });
 
-app.use("/products", productRouter); // use productRouter for all routes starting with /products
-app.use("/users", userRouter); // use userRouter for all routes starting with /users
-app.use("/orders", orderRouter); // use orderRouter for all routes starting with /orders
-app.use("/reviews", reviewRouter); // use reviewRouter for all routes starting with /reviews
+app.use("/api/products", productRouter);
+app.use("/api/users", userRouter);
+app.use("/api/orders", orderRouter);
+app.use("/api/reviews", reviewRouter);
 
 // start server
 app.listen(PORT, () => {
