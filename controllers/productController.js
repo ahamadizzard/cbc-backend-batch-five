@@ -19,6 +19,51 @@ export async function getProduct(req, res) {
   }
 }
 
+export async function getProductById(req, res) {
+  const productId = req.params.productId;
+
+  try {
+    const product = await Product.findOne({ productId: productId });
+
+    // Check if the product exists
+    if (product == null) {
+      res.status(404).json({ success: false, message: "Product not found" });
+      return;
+    }
+    // Check if the product is available for sale
+    if (!product.isAvailable && !isAdmin(req)) {
+      // If the product is not available and the user is not an admin, return a 403 error
+      res.status(403).json({
+        success: false,
+        message: "You are not authorized to view this product",
+      });
+      return;
+    }
+    const reviewFilter = { productId: productId };
+    if (!isAdmin(req)) {
+      // If the user is an admin, return all reviews for the product
+      reviewFilter.isVisible = true; // Include only visible reviews
+    }
+    const reviews = await Review.find(reviewFilter);
+
+    //this combines the product and review data into a single object
+    // and sends it as a response
+    res.json({
+      success: true,
+      product: {
+        ...product._doc, // Product details
+        reviews: reviews, // Attach reviews array
+      },
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error fetching product",
+      error: error.message,
+    });
+  }
+}
+
 export function createProduct(req, res) {
   // Check if there is a logged-in user
   if (!isAdmin(req)) {
@@ -76,51 +121,6 @@ export async function updateProduct(req, res) {
     res.status(500).json({
       message: "Error updating product",
       error: err,
-    });
-  }
-}
-
-export async function getProductById(req, res) {
-  const productId = req.params.productId;
-
-  try {
-    const product = await Product.findOne({ productId: productId });
-
-    // Check if the product exists
-    if (product == null) {
-      res.status(404).json({ success: false, message: "Product not found" });
-      return;
-    }
-    // Check if the product is available for sale
-    if (!product.isAvailable && !isAdmin(req)) {
-      // If the product is not available and the user is not an admin, return a 403 error
-      res.status(403).json({
-        success: false,
-        message: "You are not authorized to view this product",
-      });
-      return;
-    }
-    const reviewFilter = { productId: productId };
-    if (!isAdmin(req)) {
-      // If the user is an admin, return all reviews for the product
-      reviewFilter.isVisible = true; // Include only visible reviews
-    }
-    const reviews = await Review.find(reviewFilter);
-
-    //this combines the product and review data into a single object
-    // and sends it as a response
-    res.json({
-      success: true,
-      product: {
-        ...product._doc, // Product details
-        reviews: reviews, // Attach reviews array
-      },
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: "Error fetching product",
-      error: error.message,
     });
   }
 }

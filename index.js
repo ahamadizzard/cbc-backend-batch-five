@@ -7,12 +7,13 @@ import userRouter from "./routes/userRouter.js"; // import userRouter
 import orderRouter from "./routes/orderRouter.js"; // import orderRouter
 import reviewRouter from "./routes/reviewRouter.js"; // import reviewRouter
 import jwt from "jsonwebtoken";
+import cors from "cors";
 
 dotenv.config(); // load environment variables from .env file
 const PORT = process.env.PORT || 5000; // set port to environment variable or 5000 if not set
 
 const app = express(); // create express app
-
+app.use(cors()); // enable CORS for all routes
 app.use(bodyParser.json()); // parse json bodies
 
 // Middleware to check if the user is authenticated
