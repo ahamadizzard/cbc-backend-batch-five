@@ -1,6 +1,9 @@
 import User from "../models/usersModel.js";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export function isAdmin(req) {
   if (req.user == null) {
@@ -70,7 +73,7 @@ export function loginUser(req, res) {
             role: user.role,
             imgURL: user.imgURL,
           },
-          "cbc-batch-five#@2025"
+          process.env.JWT_TOKEN_SECRET
         );
         res.json({
           message: "Login Successfull",
