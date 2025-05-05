@@ -78,13 +78,7 @@ export function loginUser(req, res) {
         res.json({
           message: "Login Successfull",
           token: token,
-          user: {
-            email: user.email,
-            firstName: user.firstName,
-            lastName: user.lastName,
-            role: user.role,
-            imgURL: user.imgURL,
-          },
+          role: user.role,
         });
         // res.status(200).json({ message: "Login successful" });
       } else {
