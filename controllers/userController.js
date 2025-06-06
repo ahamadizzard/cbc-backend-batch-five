@@ -88,3 +88,18 @@ export function loginUser(req, res) {
     }
   });
 }
+export function getAllUsers(req, res) {
+  if (!isAdmin(req)) {
+    res
+      .status(403)
+      .json({ message: "You are not authorized to access this route" });
+    return;
+  }
+  User.find()
+    .then((users) => {
+      res.status(200).json(users);
+    })
+    .catch((error) => {
+      res.status(400).json({ error: error.message });
+    });
+}

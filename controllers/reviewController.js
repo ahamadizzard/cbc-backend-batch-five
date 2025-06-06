@@ -67,6 +67,21 @@ export async function getReviews(req, res) {
     return;
   }
 }
+// get review by productId
+export async function getReviewByProductId(req, res) {
+  try {
+    const productId = req.params.productId;
+    const reviews = await Review.find({
+      productId: productId,
+      isVisible: true,
+    });
+    res.json(reviews);
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    res.status(500).json({ message: "Internal server error" });
+    return;
+  }
+}
 
 // this code is to convert the date to local time
 // const localDate = new Date(review.reviewDate).toLocaleString('en-US', {

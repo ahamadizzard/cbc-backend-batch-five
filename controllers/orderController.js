@@ -130,7 +130,24 @@ export async function createOrder(req, res) {
 }
 
 export async function getOrders(req, res) {
-  // get all orders from the database
-  const orders = await Order.find();
-  res.json(orders);
+  if (req.user == null) {
+    res.status(403).json({
+      message: "Please login and try again",
+    });
+    return;
+  }
+  try {
+    if (req.user.role == "admin") {
+      const orders = await Order.find();
+      res.json(orders);
+    } else {
+      const orders = await Order.find({ email: req.user.email });
+      res.json(orders);
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Error retrieving orders",
+      error: error,
+    });
+  }
 }
