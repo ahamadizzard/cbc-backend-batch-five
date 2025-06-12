@@ -1,5 +1,6 @@
 import Order from "../models/orderModel.js";
 import Product from "../models/productModel.js";
+import { isAdmin } from "./userController.js";
 
 export async function createOrder(req, res) {
   // get user information
@@ -149,5 +150,31 @@ export async function getOrders(req, res) {
       message: "Error retrieving orders",
       error: error,
     });
+  }
+}
+
+export async function updateOrderStatus(req, res) {
+  // checking if the user is admin
+  if (!isAdmin(req)) {
+    res.status(403).json({
+      message:
+        "You are not authorized to perform this action order status update",
+    });
+    return;
+  }
+  try {
+    const orderId = req.params.orderId;
+    const status = req.params.status;
+
+    await Order.updateOne({ orderId: orderId }, { status: status });
+    res.json({
+      message: "Order status updated successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Error updating order status",
+      error: error,
+    });
+    return;
   }
 }

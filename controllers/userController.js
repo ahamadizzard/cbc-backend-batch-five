@@ -103,3 +103,45 @@ export function getAllUsers(req, res) {
       res.status(400).json({ error: error.message });
     });
 }
+
+export function updateUser(req, res) {
+  if (!isAdmin(req)) {
+    res
+      .status(403)
+      .json({ message: "You are not authorized to access this route" });
+    return;
+  }
+  User.findByIdAndUpdate(req.params.id, req.body, { new: true })
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((error) => {
+      res.status(400).json({ error: error.message });
+    });
+}
+
+export function deleteUser(req, res) {
+  if (!isAdmin(req)) {
+    res
+      .status(403)
+      .json({ message: "You are not authorized to access this route" });
+    return;
+  }
+  User.findByIdAndDelete(req.params.id)
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((error) => {
+      res.status(400).json({ error: error.message });
+    });
+}
+
+export function getUserByEmail(req, res) {
+  User.findOne({ email: req.params.email })
+    .then((user) => {
+      res.status(200).json(user);
+    })
+    .catch((error) => {
+      res.status(400).json({ error: error.message });
+    });
+}
