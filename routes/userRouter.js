@@ -1,3 +1,4 @@
+import express from "express";
 import {
   createUser,
   loginUser,
@@ -8,20 +9,25 @@ import {
   loginWithGoogle,
   sendOTP,
   resetPassword,
+  getCurrentUser,
 } from "../controllers/userController.js";
 
-import express from "express";
+const router = express.Router();
 
-const userRouter = express.Router();
+// Authentication routes
+router.post("/", createUser);
+router.post("/login", loginUser);
+router.post("/login/google", loginWithGoogle);
 
-userRouter.post("/", createUser);
-userRouter.post("/login", loginUser);
-userRouter.get("/", getAllUsers);
-userRouter.put("/:id", updateUser);
-userRouter.delete("/:id", deleteUser);
-userRouter.get("/:email", getUserByEmail);
-userRouter.post("/login/google", loginWithGoogle);
-userRouter.post("/send-otp", sendOTP);
-userRouter.post("/reset-password", resetPassword);
+// Password recovery routes
+router.post("/send-otp", sendOTP);
+router.post("/reset-password", resetPassword);
 
-export default userRouter;
+// User routes (protected)
+router.get("/", getAllUsers);
+router.get("/me", getCurrentUser);
+router.get("/:email", getUserByEmail);
+router.put("/:id", updateUser);
+router.delete("/:id", deleteUser);
+
+export default router;

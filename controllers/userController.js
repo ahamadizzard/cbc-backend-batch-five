@@ -314,7 +314,196 @@ export async function resetPassword(req, res) {
     });
   } else {
     res.status(403).json({
-      meassage: "OTPs are not matching!",
+      message: "OTPs are not matching!",
     });
   }
 }
+
+// Get current authenticated user
+export const getCurrentUser = (req, res) => {
+  if (!req.user) {
+    return res.status(403).json({ message: "Not authorized" });
+  }
+
+  res.json({
+    ...req.user,
+    // email: req.user.email,
+    // firstName: req.user.firstName,
+    // lastName: req.user.lastName,
+    // role: req.user.role,
+    // avatar: req.user.imgURL,
+  });
+};
+
+// ... rest of your controller functions
+
+// export function getUser(req, res) {
+//   if (req.user == null) {
+//     res.status(403).json({
+//       message: "You are not authorized to view user details",
+//     });
+//     return;
+//   } else {
+//     res.json({
+//       ...req.user,
+//     });
+//     console.log("from backend: ", req.user);
+//   }
+// }
+
+// export function getUser(req, res) {
+//   console.log("User data in endpoint:", req.user); // Debug what reaches the endpoint
+
+//   if (!req.user) {
+//     console.log("No user data found"); // Debug missing user case
+//     return res.status(403).json({ message: "Unauthorized" });
+//   }
+
+//   res.json(req.user);
+// }
+
+// Add this debug version temporarily
+// export function getUser(req, res) {
+//   console.log("\n=== INSIDE GETUSER CONTROLLER ===");
+//   console.log("Request user:", req.user);
+//   console.log("Request headers:", req.headers);
+//   console.log("Request cookies:", req.cookies);
+
+//   // Force response with all available data
+//   res.json({
+//     status: "DEBUG OUTPUT",
+//     userFromRequest: req.user || null,
+//     requestInfo: {
+//       path: req.path,
+//       method: req.method,
+//       headers: req.headers,
+//     },
+//   });
+// }
+
+// export function getUser(req, res) {
+//   console.log("\nFinal Controller - req.user:", req.user);
+
+//   if (!req.user) {
+//     console.error("ERROR: User not found in controller");
+//     console.log("Available request properties:", Object.keys(req));
+//     return res.status(401).json({
+//       error: "Unauthorized",
+//       debug: {
+//         headers: req.headers,
+//         receivedUser: !!req.user,
+//       },
+//     });
+//   }
+
+//   // Explicit response
+//   res.json({
+//     user: {
+//       email: req.user.email,
+//       firstName: req.user.firstName,
+//       lastName: req.user.lastName,
+//       role: req.user.role,
+//     },
+//   });
+// }
+
+// get the details of the logged user
+// export function getUser(req, res) {
+//   if (!req.user) {
+//     return res.status(401).json({
+//       message: "Not authenticated. Please login.",
+//     });
+//   }
+//   // Optionally, fetch fresh user data from DB (recommended)
+//   User.findOne({ email: req.user.email })
+//     .select("-password -__v")
+//     .then((user) => {
+//       if (!user) {
+//         return res.status(404).json({
+//           message: "User not found.",
+//         });
+//       }
+//       res.status(200).json({
+//         email: user.email,
+//         firstName: user.firstName,
+//         lastName: user.lastName,
+//         role: user.role,
+//         imgURL: user.imgURL,
+//         _id: user._id,
+//       });
+//     })
+//     .catch((error) => {
+//       res.status(500).json({ message: "Internal server error" });
+//     });
+// }
+
+// export async function getLoggedInUser(req, res) {
+//   try {
+//     // Check if user is authenticated
+//     if (!req.user?.email) {
+//       return res.status(401).json({
+//         // 401 Unauthorized is more appropriate here
+//         status: "error",
+//         message: "Not authenticated",
+//       });
+//     }
+
+//     // Get user without sensitive fields
+//     const user = await User.findOne({ email: req.user.email }).select(
+//       "-password -__v -isBlocked"
+//     );
+
+//     if (!user) {
+//       return res.status(404).json({
+//         status: "error",
+//         message: "User not found",
+//       });
+//     }
+
+//     res.json({
+//       status: "success",
+//       data: user,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching user:", error);
+//     res.status(500).json({
+//       status: "error",
+//       message: "Internal server error",
+//     });
+//   }
+// }
+
+// Get currently logged-in user's details
+// export const getMe = async (req, res) => {
+//   try {
+//     // Check if user is authenticated (req.user should be set by your auth middleware)
+//     if (!req.user) {
+//       return res.status(401).json({
+//         success: false,
+//         message: "Not authenticated. Please log in.",
+//       });
+//     }
+
+//     // Find the user by ID (from req.user._id)
+//     const user = await User.findById(req.user._id).select("-password -__v");
+
+//     if (!user) {
+//       return res.status(404).json({
+//         success: false,
+//         message: "User not found.",
+//       });
+//     }
+
+//     // Return user data (including role)
+//     res.status(200).json({
+//       success: true,
+//       data: user,
+//     });
+//   } catch (error) {
+//     console.error("Error fetching user:", error);
+//     res.status(500).json({
+//       success: false,
+//       message: "Internal server error.",
+//     });
+//   }
+// };
