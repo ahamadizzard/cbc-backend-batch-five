@@ -71,18 +71,18 @@ export async function getReviews(req, res) {
 // get reviews by rating is greater than 3
 export async function getReviewsByRating(req, res) {
   try {
-    // if (isAdmin(req)) {
-    // If the user is an admin, return all reviews
-    const reviews = await Review.find();
-    res.json(reviews);
-    // return;
-    // }
+    const filteredReviews = await Review.find({
+      rating: { $gt: 3 },
+      isVisible: true,
+    }).sort({ reviewDate: -1 }); // optional: sort newest first
+
+    res.json(filteredReviews);
   } catch (error) {
-    console.error("Error fetching reviews:", error);
+    console.error("Error fetching reviews by rating:", error);
     res.status(500).json({ message: "Internal server error" });
-    return;
   }
 }
+
 // export async function getReviewsByRating(req, res) {
 //   try {
 //     console.log("GET /all called");
