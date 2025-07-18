@@ -41,8 +41,8 @@ mongoose
 // Routes
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);
-app.use("/api/orders", orderRouter);
 app.use("/api/reviews", reviewRouter);
+app.use("/api/orders", orderRouter);
 
 // Start Server
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

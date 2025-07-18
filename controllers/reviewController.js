@@ -55,18 +55,65 @@ export async function createReview(req, res) {
 //this code is for admin user to view all reviews
 export async function getReviews(req, res) {
   try {
-    if (isAdmin(req)) {
-      // If the user is an admin, return all reviews
-      const reviews = await Review.find();
-      res.json(reviews);
-      // return;
-    }
+    // if (isAdmin(req)) {
+    // If the user is an admin, return all reviews
+    const reviews = await Review.find();
+    res.json(reviews);
+    // return;
+    // }
   } catch (error) {
     console.error("Error fetching reviews:", error);
     res.status(500).json({ message: "Internal server error" });
     return;
   }
 }
+
+// get reviews by rating is greater than 3
+export async function getReviewsByRating(req, res) {
+  try {
+    // if (isAdmin(req)) {
+    // If the user is an admin, return all reviews
+    const reviews = await Review.find();
+    res.json(reviews);
+    // return;
+    // }
+  } catch (error) {
+    console.error("Error fetching reviews:", error);
+    res.status(500).json({ message: "Internal server error" });
+    return;
+  }
+}
+// export async function getReviewsByRating(req, res) {
+//   try {
+//     console.log("GET /all called");
+//     const reviews = await Review.find();
+//     console.log("Returned reviews count:", reviews.length);
+//     res.json(reviews);
+//   } catch (error) {
+//     console.error("Error fetching reviews:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// }
+
+// try {
+//   if (isAdmin(req)) {
+//     const reviews = await Review
+//       .find
+//       // {
+//       // rating: { $gt: 3 },
+//       // isVisible: true,
+//       // }
+//       ();
+//     // console.log(reviews);
+//     res.json(reviews);
+//   }
+// } catch (error) {
+//   console.error("Error fetching reviews:", error);
+//   res.status(500).json({ message: "Internal server error" });
+//   return;
+// }
+// }
+
 // get review by productId
 export async function getReviewByProductId(req, res) {
   try {
@@ -82,6 +129,24 @@ export async function getReviewByProductId(req, res) {
     return;
   }
 }
+
+// export async function getReviewsByRating(req, res) {
+//   try {
+//     const all = await Review.find({}); // get everything
+//     console.log("Total reviews:", all.length);
+
+//     const filtered = await Review.find({
+//       rating: { $gt: 3 },
+//       isVisible: true,
+//     });
+//     console.log("Filtered reviews:", filtered.length);
+
+//     res.json(filtered);
+//   } catch (error) {
+//     console.error("Error fetching reviews:", error);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// }
 
 // this code is to convert the date to local time
 // const localDate = new Date(review.reviewDate).toLocaleString('en-US', {
