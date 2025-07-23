@@ -31,7 +31,8 @@ const PORT = process.env.PORT || 5000; // set port to environment variable or 50
 //   credentials: true, // If you're sending cookies or authorization headers
 // };
 
-app.use(cors(corsOptions));
+// app.use(cors(corsOptions));
+app.use(cors);
 app.use(bodyParser.json()); // parse json bodies
 
 // Middleware to check if the user is authenticated
