@@ -13,7 +13,25 @@ dotenv.config(); // load environment variables from .env file
 const app = express(); // create express app
 const PORT = process.env.PORT || 5000; // set port to environment variable or 5000 if not set
 
-app.use(cors()); // enable CORS for all routes
+// Allow requests from your Vercel frontend's domain
+const allowedOrigins = [
+  "https://central-beauty-cosmetics.vercel.app/", // Replace with your actual Vercel domain
+  "http://localhost:3000", // Keep this for local development if your frontend runs on 3000
+];
+
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
+  credentials: true, // If you're sending cookies or authorization headers
+};
+
+app.use(cors(corsOptions));
 app.use(bodyParser.json()); // parse json bodies
 
 // Middleware to check if the user is authenticated
