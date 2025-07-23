@@ -56,6 +56,18 @@ mongoose
   .then(() => console.log("MongoDB connected"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
+// Middleware to prevent caching for API routes
+app.use("/api", (req, res, next) => {
+  // Apply this middleware to your /api routes
+  res.setHeader(
+    "Cache-Control",
+    "no-store, no-cache, must-revalidate, proxy-revalidate"
+  );
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+  next();
+});
+
 // Routes
 app.use("/api/products", productRouter);
 app.use("/api/users", userRouter);
