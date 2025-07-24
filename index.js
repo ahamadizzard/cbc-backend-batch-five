@@ -15,7 +15,7 @@ const PORT = process.env.PORT || 5000; // set port to environment variable or 50
 
 // Allow requests from your Vercel frontend's domain
 const allowedOrigins = [
-  "https://central-beauty-cosmetics.vercel.app/", // Replace with your actual Vercel domain
+  "https://central-beauty-cosmetics.vercel.app", // Replace with your actual Vercel domain
   "http://localhost:3000", // Keep this for local development if your frontend runs on 3000
 ];
 
